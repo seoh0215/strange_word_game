@@ -12,6 +12,13 @@ jongsung_list = ['ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 
 dict_list = []
 myTurn = True
 is_first_turn = True
+
+#글자 비교
+def get_edit_dist(word, comp):
+    dist = editdistance.eval(word, comp)
+    tmp = word.replace('ㄲ', 'ㄱ').replace('ㄳ', 'ㄱ').replace('ㄺ', 'ㄱ').replace('ㄵ', 'ㄴ').replace('ㄶ', 'ㄴ').replace('ㄸ', 'ㄷ').replace('ㄽ', 'ㄹ').replace('ㅀ', 'ㄹ').replace('ㄻ', 'ㅁ').replace('ㄼ', 'ㅂ').replace('ㅄ', 'ㅂ').replace('ㅃ', 'ㅂ').replace('ㅆ', 'ㅅ').replace('ㅉ', 'ㅈ').replace('ㄾ', 'ㅌ')
+   
+    return min(dist, editdistance.eval(tmp, comp))
     
 #cpu 글자 생성 - 초+중+종 랜덤 조합
 def get_CPU_word(playerWord):
@@ -31,23 +38,22 @@ def get_CPU_word(playerWord):
 
 #게임 진행 여부 검사(유사도 검사) - 편집 거리 사용
 def is_game_over(inputWord):
-   inputWord = j2hcj(h2j(inputWord))
-   
-   for word in dict_list:
+    inputWord = j2hcj(h2j(inputWord))
+
+    for word in dict_list:
        comp = j2hcj(h2j(word))
        
-       dist = editdistance.eval(inputWord, comp) #편집 거리의 최대값은 9 
-       sim = (9 - dist)/9*100 #유사도 기준은 77%
+       dist = get_edit_dist(inputWord, comp) #편집 거리의 최대값은 9 
+       sim = (9 - dist)/9*100 #유사도 기준은 80%
        
        if sim >= 80:
            print('CPU가 우기기를 사용했습니다.')
            print('우긴 단어: %s' % join_jamos(comp))
-           print('유사도: %.2f%%' % sim)
            print('게임에서 패배하였습니다.')
            
            return True
        
-   return False
+    return False
 
 def insist_word(CPUWord, compWord):
     possible_word = False
@@ -63,12 +69,11 @@ def insist_word(CPUWord, compWord):
            
     cpu = j2hcj(h2j(CPUWord))
     comp = j2hcj(h2j(compWord))
-    dist = editdistance.eval(cpu, comp)
+    dist = get_edit_dist(cpu, comp)
     sim = (9 - dist)/9*100
     
     if sim >= 80:
         print('우긴 단어: %s' % join_jamos(comp))
-        print('유사도: %.2f%%' % sim)
         print('우기기가 성공했습니다! 당신이 이겼습니다.')
         return True
     else:
@@ -117,8 +122,13 @@ if __name__ == '__main__':
                     is_first_turn = False
                     
             if is_game_over(myWord):
-                is_continue = False
-                break
+                again_key = input('다시 시작하려면 1을 눌러주세요.')
+                if again_key == '1':
+                    is_first_turn = True
+                    myTurn = True
+                    continue
+                else:
+                    break
             
             myTurn = False
                     
@@ -132,8 +142,14 @@ if __name__ == '__main__':
             if is_insist == '1':
                 compWord = input('비교할 단어를 입력해주세요: ')
                 if insist_word(CPUWord, compWord):
-                    is_continue = False
-                    break
+                    again_key = input('다시 시작하려면 1을 눌러주세요.')
+                    if again_key == '1':
+                        is_first_turn = True
+                        myTurn = True
+                        continue
+                    else:
+                        break
                 
             myTurn = True
             
+    sys.exit('게임 종료')
