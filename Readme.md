@@ -17,4 +17,4 @@
 ===================================
 * 사전은 [표준대국어사전](https://stdict.korean.go.kr/search/searchDetailWords.do)에서 3글자의 단어로 검색한 결과입니다. 검색 결과를 내려받아서 자료로 활용했습니다.
 * 사전에서 단어를 추출하는 코드는 [khjkr/stdict-py](https://github.com/khjkr/stdict-py)를 참고하였습니다. 
-* 실행 파일은 strange_word_game.exe(https://github.com/seoh0215/strange_word_game) 입니다.
+* 실행 파일은 strange_word_game.exe(https://github.com/seoh0215/strange_word_game/blob/master/dist/strange_word_game/strange_word_game.exe) 입니다.
