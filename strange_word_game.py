@@ -14,11 +14,13 @@ myTurn = True
 is_first_turn = True
 
 #글자 비교
-def get_edit_dist(word, comp):
-    dist = editdistance.eval(word, comp)
-    tmp = word.replace('ㄲ', 'ㄱ').replace('ㄳ', 'ㄱ').replace('ㄺ', 'ㄱ').replace('ㄵ', 'ㄴ').replace('ㄶ', 'ㄴ').replace('ㄸ', 'ㄷ').replace('ㄽ', 'ㄹ').replace('ㅀ', 'ㄹ').replace('ㄻ', 'ㅁ').replace('ㄼ', 'ㅂ').replace('ㅄ', 'ㅂ').replace('ㅃ', 'ㅂ').replace('ㅆ', 'ㅅ').replace('ㅉ', 'ㅈ').replace('ㄾ', 'ㅌ')
-   
-    return min(dist, editdistance.eval(tmp, comp))
+def get_edit_dist(inputWord, comp):
+    dist = editdistance.eval(inputWord, comp)
+    word = inputWord
+    word = word.replace('ㄲ', 'ㄱ').replace('ㄳ', 'ㄱ').replace('ㄺ', 'ㄱ').replace('ㄵ', 'ㄴ').replace('ㄶ', 'ㄴ').replace('ㄸ', 'ㄷ').replace('ㄽ', 'ㄹ').replace('ㅀ', 'ㄹ').replace('ㄻ', 'ㅁ').replace('ㄼ', 'ㅂ').replace('ㅄ', 'ㅂ').replace('ㅃ', 'ㅂ').replace('ㅆ', 'ㅅ').replace('ㅉ', 'ㅈ').replace('ㄾ', 'ㅌ')
+    addVal = editdistance.eval(inputWord, word) * 0.5
+    
+    return min(dist, editdistance.eval(word, comp) + addVal)
     
 #cpu 글자 생성 - 초+중+종 랜덤 조합
 def get_CPU_word(playerWord):
@@ -44,11 +46,12 @@ def is_game_over(inputWord):
        comp = j2hcj(h2j(word))
        
        dist = get_edit_dist(inputWord, comp) #편집 거리의 최대값은 9 
-       sim = (9 - dist)/9*100 #유사도 기준은 80%
+       sim = (9 - dist)/9*100 #유사도 기준은 75%
        
-       if sim >= 80:
+       if sim >= 75:
            print('CPU가 우기기를 사용했습니다.')
            print('우긴 단어: %s' % join_jamos(comp))
+           print('유사도: %.2f' % sim+'%')
            print('게임에서 패배하였습니다.')
            
            return True
@@ -59,7 +62,7 @@ def insist_word(CPUWord, compWord):
     possible_word = False
     
     for word in dict_list:
-       if compWord == CPUWord:
+       if compWord == word:
            possible_word = True
            break
        
@@ -72,11 +75,13 @@ def insist_word(CPUWord, compWord):
     dist = get_edit_dist(cpu, comp)
     sim = (9 - dist)/9*100
     
-    if sim >= 80:
+    if sim >= 75:
         print('우긴 단어: %s' % join_jamos(comp))
+        print('유사도: %.2f' % sim+'%')
         print('우기기가 성공했습니다! 당신이 이겼습니다.')
         return True
     else:
+        print('유사도: %.2f' % sim+'%')
         print('유사도가 너무 낮습니다. 게임을 계속합니다.')      
         
     return False
